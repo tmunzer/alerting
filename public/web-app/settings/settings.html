@@ -1,0 +1,151 @@
+<md-content style="padding-bottom: 15px;" layout="column">
+    <md-content layout-margin md-whiteframe="5">
+        <md-tabs md-dynamic-height md-border-bottom>
+            <md-tab label="{{'settings.user.title' | translate}}">
+                <md-content class="md-padding">
+                    <md-button class="md-primary md-raised" translate="settings.user.new_user_button" aria-label="new user" ng-click="newUser()"></md-button>
+                    <md-table-container>
+                        <table md-table md-progress="requestForUsers">
+                            <thead md-head md-order="userTable.order">
+                            <tr md-row>
+                                <th md-column style="width: 10%" md-order-by='organization' ng-show="myAccount.fullAccess">
+                                    {{"settings.user.organization" | translate}}
+                                </th>
+                                <th md-column style="width: 15%" md-order-by='username'>
+                                    {{"settings.user.username" | translate}}
+                                </th>
+                                <th md-column style="width: 20%" md-order-by='firstName'>
+                                    {{"settings.user.firstName" | translate}}
+                                </th>
+                                <th md-column style="width: 20%" md-order-by='lastName'>
+                                    {{"settings.user.lastName" | translate}}
+                                </th>
+                                <th md-column style="width: 15%" md-order-by='fullAccess' ng-show="myAccount.fullAccess">
+                                    {{"settings.user.fullAccess" | translate}}
+                                </th>
+                                <th md-column style="width: 15%" md-order-by='writeAccess'>
+                                    {{"settings.user.writeAccess" | translate}}
+                                </th>
+                                <th md-column style="width: 10%" md-order-by='enable'>
+                                    {{"settings.user.enable" | translate}}
+                                </th>
+                                <th md-column style="width: 15%" md-order-by='lastLogin'>
+                                    {{"settings.user.lastLogin" | translate}}
+                                </th>
+                                <th md-column style="width: 5%">
+                                    {{"settings.user.action" | translate}}
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody md-body>
+                            <tr md-row
+                                ng-repeat="user in users | orderBy: userTable.order | limitTo: userItemsByPage: (userCurrentPage - 1) * userItemsByPage">
+                                <td md-cell ng-show="myAccount.fullAccess">
+                                    <div>{{user.organization.name}}</div>
+                                </td>
+                                <td md-cell>
+                                    <div><md-button class="md-primary tm-action-button" ng-click="editUser(user)">{{user.email}}</md-button></div>
+                                </td>
+                                <td md-cell>
+                                    <div>{{user.name.first}}</div>
+                                </td>
+                                <td md-cell>
+                                    <div>{{user.name.last}}</div>
+                                </td>
+                                <td md-cell ng-show="myAccount.fullAccess">
+                                    <div ng-bind-html="user.fullAccess | userStatus"></div>
+                                </td>
+                                <td md-cell>
+                                    <div ng-bind-html="user.writeAccess | userStatus"></div>
+                                </td>
+                                <td md-cell>
+                                    <div ng-bind-html="user.enabled | userStatus"></div>
+                                </td>
+                                <td md-cell>
+                                    <div>{{user.lastLogin | date: 'short'}}</div>
+                                </td>
+                                <td md-cell>
+                                    <md-button class="md-warn tm-action-button"
+                                               ng-click="deleteUser(user._id)"
+                                                ng-disabled="myAccount._id === user._id">
+                                        <md-icon class="material-icons md-18">delete</md-icon>
+                                    </md-button>
+
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </md-table-container>
+                    <md-table-pagination md-limit="userItemsByPage" md-limit-options="[10, 20, 50, 100 ]"
+                                         md-page="userCurrentPage"
+                                         md-total="{{users.length}}"></md-table-pagination>
+                </md-content>
+            </md-tab>
+            <md-tab label="{{'settings.api.title' | translate }}">
+                <md-content class="md-padding">
+                    <md-button class="md-primary md-raised" href="{{registerLink}}" translate="settings.api.register" aria-label="register api"></md-button>
+                    <md-table-container>
+                        <table md-table  md-progress="api.promise">
+                            <thead md-head md-order="apiTable.order">
+                            <tr md-row>
+                                <th md-column style="width: 15%" md-order-by='organization' ng-show="myAccount.fullAccess">
+                                    {{"settings.api.organization" | translate}}
+                                </th>
+                                <th md-column style="width: 15%" md-order-by='ownerId'>
+                                    ownerId
+                                </th>
+                                <th md-column style="width: 15%" md-order-by='vhmId'>
+                                    vhmId
+                                </th>
+                                <th md-column style="width: 15%" md-order-by='vpcURL'>
+                                    vpcURL
+                                </th>
+                                <th md-column style="width: 15%" md-order-by='accessToken'>
+                                    accessToken
+                                </th>
+                                <th md-column style="width: 30%" md-order-by='expireAt'>
+                                    {{"settings.api.expireAt" | translate}}
+                                </th>
+                                <th md-column style="width: 10%">
+                                    {{"settings.api.action" | translate}}
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody md-body>
+                            <tr md-row
+                                ng-repeat="api in apis | orderBy: apiTable.order | limitTo: apiItemsByPage: (apiCurrentPage - 1) * apiItemsByPage">
+                                <td md-cell ng-show="myAccount.fullAccess">
+                                    <div><md-button class="md-primary tm-action-button" ng-click="editApi(api)">{{api.organization.name | organizationDisplay}}</md-button> </div>
+                                </td>
+                                <td md-cell>
+                                    <div>{{api.ownerId}}</div>
+                                </td>
+                                <td md-cell>
+                                    <div>{{api.vhmId}}</div>
+                                </td>
+                                <td md-cell>
+                                    <div>{{api.vpcUrl}}</div>
+                                </td>
+                                <td md-cell>
+                                    <div>{{api.accessToken}}</div>
+                                </td>
+                                <td md-cell>
+                                    <div>{{api.expireAt}}</div>
+                                </td>
+                                <td md-cell>
+                                    <md-button class="md-warn tm-action-button" ng-click="deleteApi(api.id)">
+                                        <md-icon class="material-icons md-18">delete</md-icon>
+                                    </md-button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </md-table-container>
+                    <md-table-pagination md-limit="apiItemsByPage" md-limit-options="[10, 20, 50, 100 ]"
+                                         md-page="apiCurrentPage"
+                                         md-total="{{apis.length}}"></md-table-pagination>
+                </md-content>
+            </md-tab>
+        </md-tabs>
+    </md-content>
+</md-content>

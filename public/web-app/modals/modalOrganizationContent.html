@@ -1,0 +1,24 @@
+<md-dialog aria-label="List dialog" style="min-width: 300px; width: 600px;">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2 translate="organizations.modalTitle"></h2>
+        </div>
+    </md-toolbar>
+    <div ng-show="!isWorking"
+         style="background-color: rgb(76,175,80); height: 5px; width: 100%"></div>
+    <md-progress-linear ng-show="isWorking" md-mode="indeterminate"
+                        class="md-accent"></md-progress-linear>
+    <md-content layout="column" layout-padding>
+        <md-input-container>
+            <label for="organizationName"><span translate="organizations.name"></span><span
+                    style="color: red">*</span></label>
+            <input id="organizationName" ng-model="organization.name" ng-required=""/>
+        </md-input-container>
+    </md-content>
+    <md-dialog-actions layout="row">
+        <md-button translate="button.cancel_button" aria-label="cancel" ng-click="cancel()"></md-button>
+        <md-button class="md-raised md-primary" translate="button.save_button" aria-label="save"
+                   ng-disabled="isNotValid()"
+                   ng-click="save()"></md-button>
+    </md-dialog-actions>
+</md-dialog>

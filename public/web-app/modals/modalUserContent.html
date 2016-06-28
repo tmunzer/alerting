@@ -1,0 +1,101 @@
+<md-dialog aria-label="List dialog" style="min-width: 300px; width: 600px;">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2 translate="settings.user.modal_title"></h2>
+        </div>
+    </md-toolbar>
+    <div ng-show="!isWorking"
+         style="background-color: rgb(76,175,80); height: 5px; width: 100%"></div>
+    <md-progress-linear ng-show="isWorking" md-mode="indeterminate"
+                        class="md-accent"></md-progress-linear>
+    <md-content layout="column" layout-padding>
+        <form id="search">
+
+
+
+
+
+            <div layout-gt-sm="row">
+                <md-input-container class="md-block tight" flex-gt-sm>
+                    <label for="firstName"><span translate="settings.user.firstName"></span></label>
+                    <input type="text" id="firstName" ng-model="user.name.first"/>
+                </md-input-container>
+                <md-input-container class="md-block tight" flex-gt-sm>
+                    <label for="lastName"><span translate="settings.user.lastName"></span></label>
+                    <input type="text" id="lastName" ng-model="user.name.last"/>
+                </md-input-container>
+            </div>
+
+
+            <md-input-container class="md-block tight">
+                <label for="email"><span translate="settings.user.email"></span></label>
+                <input type="email" id="email" ng-model="user.email"/>
+            </md-input-container>
+
+            <md-input-container class="md-block tight" ng-show="user._id.length > 0">
+                <md-input>
+                    <md-checkbox id="changePassword" ng-model="changePassword" aria-label="changePassword"><span
+                            translate="settings.user.changePassword"></span></md-checkbox>
+                </md-input>
+            </md-input-container>
+            <div layout-gt-sm="row" ng-show="changePassword || ! user._id.length > 0">
+                <md-input-container class="md-block tight" flex-gt-sm>
+                    <label for="password"><span translate="settings.user.password"></span>
+                        <span style="color: red">*</span></label>
+                    <input type="password" id="password" ng-model="password" autocomplete="off"/>
+                </md-input-container>
+
+                <md-input-container class="md-block tight" flex-gt-sm ng-show="showPasswordConfirm()">
+                    <label for="password_confirm"><span translate="settings.user.confirm_password"></span>
+                        <span style="color: red">*</span></label>
+                    <input type="password" id="password_confirm" ng-model="password_confirm" autocomplete="off"/>
+                </md-input-container>
+            </div>
+
+            <md-input-container class="md-block tight"
+                                ng-show="myAccount.fullAccess == true">
+                <md-input>
+                    <md-checkbox id="fullAccess" ng-model="user.fullAccess" aria-label="user fullAccess"
+                                 ng-disabled="myAccount._id == user._id"><span
+                            translate="settings.user.fullAccess"></span></md-checkbox>
+                </md-input>
+            </md-input-container>
+
+            <md-input-container class="md-block tight">
+                <md-input>
+                    <md-checkbox id="writeAccess" ng-model="user.writeAccess" aria-label="user writeAccess"
+                                 ng-disabled="myAccount._id == user._id || user.fullAccess == true"><span
+                            translate="settings.user.writeAccess"></span></md-checkbox>
+                </md-input>
+            </md-input-container>
+
+
+            <md-input-container class="md-block"
+                                ng-show="myAccount.fullAccess && !user.fullAccess"
+                                ng-disabled="myAccount._id == user._id" >
+
+                <label for="organization"><span translate="settings.user.organization"></span>
+                    <span style="color: red">*</span>
+                </label>
+                <md-select id="organization" ng-model="user.organization">
+                    <md-option ng-repeat="organization in organizations" ng-value="organization._id">{{organization.name}}</md-option>
+                </md-select>
+            </md-input-container>
+
+
+            <md-input-container class="md-block tight">
+                <md-input>
+                    <md-checkbox id="enabled" ng-model="user.enabled" aria-label="user enabled"><span
+                            translate="settings.user.enable"></span></md-checkbox>
+                </md-input>
+            </md-input-container>
+        </form>
+    </md-content>
+    <md-dialog-actions layout="row">
+        <md-button translate="button.cancel_button" aria-label="cancel" ng-click="cancel()"
+                   ng-disabled="isWorking"></md-button>
+        <md-button class="md-raised md-primary" translate="button.save_button" aria-label="save"
+                   ng-disabled="isWorking || isNotValid()"
+                   ng-click="save()"></md-button>
+    </md-dialog-actions>
+</md-dialog>

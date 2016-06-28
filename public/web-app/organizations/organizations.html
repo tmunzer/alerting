@@ -1,0 +1,44 @@
+<md-content style="padding-bottom: 5px; width: 100%;">
+    <article md-whiteframe="5">
+        <md-content>
+            <md-content class="md-padding">
+                <md-button class="md-primary md-raised" translate="organizations.newOrganization"
+                           ng-click="newOrganization()" aria-label="new organization"></md-button>
+                <md-table-container>
+                    <table md-table md-progress="organizations.promise">
+                        <thead md-head md-order="table.order">
+                        <tr md-row>
+                            <th md-column style="width: 90%" md-order-by='name'>
+                                {{"organizations.name" | translate}}
+                            </th>
+                            <th md-column style="width: 10%">
+                                {{"organizations.action" | translate}}
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody md-body>
+                        <tr md-row
+                            ng-repeat="organization in organizations | orderBy: table.order | limitTo: itemsByPage: (currentPage - 1) * itemsByPage">
+                            <td md-cell>
+                                <div>
+                                    <md-button class="md-primary tm-action-button" ng-click="editOrganization(organization)">
+                                        {{organization.name}}
+                                    </md-button>
+                                </div>
+                            </td>
+                            <td md-cell>
+                                <md-button class="md-warn tm-action-button" ng-click="deleteOrganization(organization._id)">
+                                    <md-icon class="material-icons md-18">delete</md-icon>
+                                </md-button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+                <md-table-pagination md-limit="itemsByPage" md-limit-options="[10, 20, 50, 100 ]"
+                                     md-page="currentPage"
+                                     md-total="{{organizations.length}}"></md-table-pagination>
+            </md-content>
+        </md-content>
+    </article>
+</md-content>

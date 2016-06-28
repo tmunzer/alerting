@@ -1,0 +1,114 @@
+doctype html5
+html
+    head
+        title= title
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+        script(src="/i18n/web-app/en.js")
+        script(src="/i18n/web-app/fr.js")
+        link(rel="stylesheet" href="/bower_components/material-design-icons/iconfont/material-icons.css")
+        link(rel="stylesheet" href="/bower_components/angular-material-data-table/dist/md-data-table.min.css")
+        link(rel="stylesheet" href="/bower_components/angular-material/angular-material.min.css")
+        link(rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css")
+        link(rel='stylesheet' href='/bower_components/sc-date-time/dist/sc-date-time.css')
+        link(rel='stylesheet' href='/css/ah-tm.dashboard.css')
+        link(rel='stylesheet' href='/css/ah-tm.tags.css')
+        link(rel='stylesheet' href='/css/ah-tm.cards.css')
+        link(rel='stylesheet' href='/css/ah-tm.md-table.css')
+        link(rel='stylesheet' href='/css/ah-tm.md-list.css')
+        link(rel='stylesheet' href='/css/ah-tm.header.css')
+        link(rel='stylesheet' href='/css/ah-tm.label.css')
+        link(rel='stylesheet' href='/css/ah-tm.datetime.css')
+        script(src="/bower_components/angular/angular.min.js")
+        script(src='/bower_components/sc-date-time/dist/sc-date-time.js')
+        script(src="/bower_components/angular-aria/angular-aria.js")
+        script(src="/bower_components/angular-animate/angular-animate.min.js")
+        script(src="/bower_components/angular-material/angular-material.js")
+        script(src="/bower_components/angular-messages/angular-messages.js")
+        script(src="/bower_components/angular-material-data-table/dist/md-data-table.min.js")
+        script(src="/bower_components/angular-route/angular-route.min.js")
+        script(src="/bower_components/angular-bootstrap/ui-bootstrap.js")
+        script(src="/bower_components/angular-translate/angular-translate.min.js")
+        script(src="/web-app/app.js")
+        script(src="/web-app/routes.js")
+        script(src="/web-app/filters/filters.js")
+        script(src="/web-app/alarms/controller.js")
+        script(src="/web-app/alarms/service.js")
+        script(src="/web-app/organizations/controller.js")
+        script(src="/web-app/organizations/service.js")
+        script(src="/web-app/rules/controller.js")
+        script(src="/web-app/rules/service.js")
+        script(src="/web-app/settings/controller.js")
+        script(src="/web-app/settings/service.js")
+        script(src="/web-app/modals/controller.js")
+        script(src="/web-app/modals/service.js")
+        script(src="/web-app/ng-sanitize.js")
+    body(ng-app="alerting").icons-docs
+        input(type='hidden' name="clientId" value=clientId ng-model="clientId")
+        input(type='hidden' name='redirectUrl' value=redirectUrl ng-model="redirectUrl")
+        div(ng-controller="UserCtrl as UserCtrl")
+            header.md-page-header(ng-controller="HeaderCtrl")
+                div.header
+                md-toolbar.header.fixed(layout='row')
+                    h1.logo.md-toolbar-tools
+                        img(src="/images/logo.png" alt="Aerohive")
+                    span(flex)
+                    md-input-container.md-block.flex-gt-sm
+                        label
+                            span(translate="layout.organization")
+                        if fullAccess == true
+                            md-select(ng-model="organizationId" aria-label="Organizations" ng-disabled="organizations.length == 0")
+                                md-option(value="0") All
+                                md-option(value="{{organization._id}}" ng-repeat="organization in organizations") {{organization.name}}
+                        else
+                            md-select(ng-model="organizationId" aria-label="Organizations" ng-disabled="true")
+                                md-option(ng-selected="true" value="{{organization._id}}" ng-repeat="organization in organizations") {{organization.name}}
+                    md-menu
+                        md-button(aria-label="language" ng-click="UserCtrl.openMenu($mdOpenMenu, $event)" style="min-width: 20px;")
+                            md-tooltip(md-direction="bottom" md-visible="tooltipVisible") {{"button.language" | translate}}
+                            md-icon(class="material-icons" aria-label="language") language
+                        md-menu-content
+                            md-menu-item
+                                md-button(ng-controller="ModalCtrl" ng-click="UserCtrl.translate('en')")
+                                    span(style="display: inline-flex; margin-right: 5px;")
+                                        div.iti-flag.gb
+                                    span English
+                            md-menu-item
+                                md-button(ng-controller="ModalCtrl" ng-click="UserCtrl.translate('fr')")
+                                    span(style="display: inline-flex; margin-right: 5px;")
+                                        div.iti-flag.fr
+                                    span Francais
+                    md-menu
+                        md-button(aria-label="menu" ng-click="UserCtrl.openMenu($mdOpenMenu, $event)" style="min-width: 20px;")
+                            md-tooltip(md-direction="bottom" md-visible="tooltipVisible") {{"button.menu" | translate}}
+                            md-icon(class="material-icons" aria-label="menu") more_vert
+                        md-menu-content
+                            md-menu-item
+                                md-button(ng-click="myAccount()")
+                                    md-icon(md-menu-align-target) info
+                                    span(translate="layout.details")
+                            md-menu-item
+                                md-button(href="/logout/")
+                                    md-icon(md-menu-align-target) exit_to_app
+                                    span(translate="layout.logout")
+                md-toolbar.md-menu-toolbar(layout="row")
+                    md-toolbar-filler(layout layout-align="center center" style="width:250px; background-color: white" hide-xs hide-sm hide-md)
+                    md-menu-bar.main-menu
+                        md-button(href="#/alarms/" ng-class="{cur: nav.isActive('alarms')}")
+                            md-icon.material-icons.md-24 warning
+                            div(translate="layout.alarms")
+                        md-button(href="#/rules/" ng-class="{cur: nav.isActive('rules')}")
+                            md-icon.material-icons.md-24 sms_failed
+                            div(translate="layout.rules")
+                        if writeAccess == true
+                            md-button(href="#/settings/" ng-class="{cur: nav.isActive('settings')}")
+                                md-icon.material-icons.md-24 settings
+                                div(translate="layout.settings")
+                        if fullAccess == true
+                            md-button(href="#/organizations/" ng-class="{cur: nav.isActive('organizations')}" ng-if="showOrganizations() == true")
+                                md-icon.material-icons.md-24 business
+                                div(translate='layout.organizations')
+
+            div(id="main")
+                md-button.md-fab.md-warn.md-mini(aria-label="menu" style="position: fixed; bottom: 20px; left: 20px" ng-show="UserCtrl.showFab()" hide-gt-md ng-click='UserCtrl.sideNav("left")')
+                    md-icon.material-icons.md-12 menu
+                ng-view
