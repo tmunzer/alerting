@@ -9,11 +9,9 @@
                     <div class="md-toolbar-tools" id='table-search' ng-show="table.show">
                         <md-input-container md-no-float class="md-block search-tool">
                             <md-icon class="material-icons search-tool">search</md-icon>
-                            <input ng-model="table.filter" class="search-tool"
-                                   placeholder="{{'button.search' | translate}}">
+                            <input ng-model="table.filter" class="search-tool" placeholder="{{'button.search' | translate}}">
                         </md-input-container>
-                        <button class="md-icon-button md-button" type="button"
-                                ng-click="removeFilter()" aria-label="close">
+                        <button class="md-icon-button md-button" type="button" ng-click="removeFilter()" aria-label="close">
                             <md-icon class="material-icons">close</md-icon>
                             <md-tooltip md-direction="bottom">
                                 {{"button.close" | translate}}
@@ -23,8 +21,7 @@
                     </div>
                     <div class="md-toolbar-tools" ng-hide="table.show">
                         <div flex></div>
-                        <button class="md-icon-button md-button" ng-click="table.show = true"
-                                aria-label="filter_list">
+                        <button class="md-icon-button md-button" ng-click="table.show = true" aria-label="filter_list">
                             <md-icon class="material-icons">search</md-icon>
                             <md-tooltip md-direction="bottom">
                                 {{"button.search" | translate}}
@@ -32,22 +29,19 @@
 
                             <div class="md-ripple-container"></div>
                         </button>
-                        <md-button class="md-icon-button md-button" ng-click="ackAlert()"
-                                   ng-disabled="selectedItems == 0">
+                        <md-button class="md-icon-button md-button" ng-click="ackAlert()" ng-disabled="selectedItems == 0">
                             <md-icon class="material-icons">check</md-icon>
                             <md-tooltip md-direction="bottom">
                                 {{"button.ack" | translate}}
                             </md-tooltip>
                         </md-button>
-                        <md-button class="md-icon-button md-button" ng-click="clearAlert()"
-                                   ng-disabled="selectedItems == 0">
+                        <md-button class="md-icon-button md-button" ng-click="clearAlert()" ng-disabled="selectedItems == 0">
                             <md-icon class="material-icons">clear</md-icon>
                             <md-tooltip md-direction="bottom">
                                 {{"button.clear" | translate}}
                             </md-tooltip>
                         </md-button>
-                        <md-button class="md-icon-button md-button" ng-click="removeAlert()"
-                                   ng-disabled="selectedItems == 0">
+                        <md-button class="md-icon-button md-button" ng-click="removeAlert()" ng-disabled="selectedItems == 0">
                             <md-icon class="material-icons">delete</md-icon>
                             <md-tooltip md-direction="bottom">
                                 {{"button.delete" | translate}}
@@ -65,89 +59,78 @@
             </md-toolbar>
 
 
-            <div ng-show="alarmsLoaded()"
-                 style="background-color: rgb(76,175,80); height: 5px; width: 100%"></div>
-            <md-progress-linear ng-show="!alarmsLoaded()" md-mode="indeterminate"
-                                class="md-accent"></md-progress-linear>
+            <div ng-show="alarmsLoaded()" style="background-color: rgb(76,175,80); height: 5px; width: 100%"></div>
+            <md-progress-linear ng-show="!alarmsLoaded()" md-mode="indeterminate" class="md-accent"></md-progress-linear>
 
             <div style="position: relative; min-height: 150px;">
-                <div ng-show="!alarmsLoaded()"
-                     style="position: absolute;height: 100%;width: 100%;background-color: rgba(250,250,250,0.7);vertical-align: middle;">
+                <div ng-show="!alarmsLoaded()" style="position: absolute;height: 100%;width: 100%;background-color: rgba(250,250,250,0.7);vertical-align: middle;">
                 </div>
 
 
                 <md-table-container>
                     <table md-table>
                         <thead md-head md-order="table.order">
-                        <tr md-row>
-                            <th md-column style="width: 5%">
-                                <div>
-                                    <md-checkbox ng-change="selectAll()" ng-disabled="alarms.length <= 0"
-                                                 ng-model="selectAllChecked" class="md-accent"
-                                                 aria-label="Select All">
-                                    </md-checkbox>
-                                </div>
-                            </th>
-                            <th md-column style="width: 20%" md-order-by='organization'>
-                                {{"alarms.organization" | translate}}
-                            </th>
-                            <th md-column style="width: 20%" md-order-by='type'>
-                                {{"alarms.type" | translate}}
-                            </th>
-                            <th md-column style="width: 20%" md-order-by='message'>
-                                {{'alarms.message' | translate }}
-                            </th>
-                            <th md-column style="width: 10%" md-order-by='entryDate'>
-                                {{"alarms.entryDate" | translate}}
-                            </th>
-                            <th md-column style="width: 5%" md-order-by='ackDate'>
-                                {{"alarms.ackDate" | translate}}
-                            </th>
-                            <th md-column style="width: 20%" md-order-by='clearDate'>
-                                {{"alarms.clearDate" | translate}}
-                            </th>
-                        </tr>
+                            <tr md-row>
+                                <th md-column style="width: 5%">
+                                    <div>
+                                        <md-checkbox ng-change="selectAll()" ng-disabled="alarms.length <= 0" ng-model="selectAllChecked" class="md-accent" aria-label="Select All">
+                                        </md-checkbox>
+                                    </div>
+                                </th>
+                                <th md-column style="width: 20%" md-order-by='organization'>
+                                    {{"alarms.organization" | translate}}
+                                </th>
+                                <th md-column style="width: 20%" md-order-by='type'>
+                                    {{"alarms.type" | translate}}
+                                </th>
+                                <th md-column style="width: 20%" md-order-by='message'>
+                                    {{'alarms.message' | translate }}
+                                </th>
+                                <th md-column style="width: 10%" md-order-by='entryDate'>
+                                    {{"alarms.entryDate" | translate}}
+                                </th>
+                                <th md-column style="width: 5%" md-order-by='ackDate'>
+                                    {{"alarms.ackDate" | translate}}
+                                </th>
+                                <th md-column style="width: 20%" md-order-by='clearDate'>
+                                    {{"alarms.clearDate" | translate}}
+                                </th>
+                            </tr>
                         </thead>
                         <tbody md-body>
-                        <tr md-row
-                            ng-repeat="alarm in alarms | orderBy: table.order | limitTo: itemsByPage: (currentPage - 1) * itemsByPage"
-                            ng-click="selectOne(alarm, true)" ng-class="{'tm-selected': alarm.selected}">
-                            <td md-cell>
-                                <div>
-                                    <md-checkbox ng-model="alarm.selected" class="md-accent"
-                                                 ng-change="selectOne(alarm, false)"
-                                                 ng-click="$event.stopPropagation();"
-                                                 aria-label="Select Alert">
-                                </div>
-                            </td>
-                            <td md-cell>
-                                <div>{{alarm.organization}}</div>
-                            </td>
-                            <td md-cell>
-                                <div>{{alarm.type}}</div>
-                            </td>
-                            <td md-cell>
-                                <div>{{alarm.message}}</div>
-                            </td>
-                            <td md-cell>
-                                <div>{{alarm.entryDate | date : 'short' }}</div>
-                            </td>
-                            <td md-cell>
-                                <div>{{alarm.ackDate  | date : 'short' }}</div>
-                            </td>
-                            <td md-cell>
-                                <div>{{alarm.clearDate | date : 'short' }}</div>
-                            </td>
-                        </tr>
+                            <tr md-row ng-repeat="alarm in alarms | orderBy: table.order | limitTo: itemsByPage: (currentPage - 1) * itemsByPage" ng-click="selectOne(alarm, true)"
+                                ng-class="{'tm-selected': alarm.selected}">
+                                <td md-cell>
+                                    <div>
+                                        <md-checkbox ng-model="alarm.selected" class="md-accent" ng-change="selectOne(alarm, false)" ng-click="$event.stopPropagation();"
+                                            aria-label="Select Alert">
+                                    </div>
+                                </td>
+                                <td md-cell>
+                                    <div>{{alarm.organization}}</div>
+                                </td>
+                                <td md-cell>
+                                    <div>{{alarm.type}}</div>
+                                </td>
+                                <td md-cell>
+                                    <div>{{alarm.message}}</div>
+                                </td>
+                                <td md-cell>
+                                    <div>{{alarm.entryDate | date : 'short' }}</div>
+                                </td>
+                                <td md-cell>
+                                    <div>{{alarm.ackDate | date : 'short' }}</div>
+                                </td>
+                                <td md-cell>
+                                    <div>{{alarm.clearDate | date : 'short' }}</div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </md-table-container>
-                <md-table-pagination md-limit="itemsByPage" md-limit-options="[10, 20, 50, 100 ]"
-                                     md-page="currentPage"
-                                     md-total="{{credentials.length}}"></md-table-pagination>
+                <md-table-pagination md-limit="itemsByPage" md-limit-options="[10, 20, 50, 100 ]" md-page="currentPage" md-total="{{credentials.length}}"></md-table-pagination>
             </div>
-            <div class="grid-mark"
-                 ng-style="credentialsLoaded() === true && {'display': 'none'}"></div>
+            <div class="grid-mark" ng-style="credentialsLoaded() === true && {'display': 'none'}"></div>
 
         </md-content>
     </article>

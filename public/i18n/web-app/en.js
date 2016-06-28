@@ -93,6 +93,17 @@ var en = {
             modal_title: "User Parameters",
             changePassword: "Change password"
         },
+        emailLists: {
+            title: "Email lists management",
+            new_emailList_button: "New email List",
+            organization: "Organization",
+            name: "Name",
+            count: "Number of emails addresses",
+            action: "Action",
+            modal_title: "Email lists Parameters",
+            emailListName: "List name",
+            emails: "Email addresses"
+        },
         api: {
             title:"API configuration",
             register:"Register APP",

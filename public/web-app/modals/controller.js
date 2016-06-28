@@ -1,41 +1,3 @@
-angular.module("Modals").controller("DialogOrganizationController", function ($scope, $rootScope, $mdDialog, organizationsService, items) {
-    $scope.organization = angular.copy(items.organization);
-    if (items.hasOwnProperty('organizationId')) $scope.organizationId = items.organizationId;
-    else $scope.organizationId = null;
-
-    $scope.isWorking = false;
-
-    $scope.isNotValid = function () {
-        if (!$scope.organization.hasOwnProperty('name')) return true;
-        else if ($scope.organization.name == "") return true;
-        else return false;
-    };
-
-    $scope.save = function () {
-        $scope.isWorking = true;
-        var updateOrganization = organizationsService.updateOrganization($scope.organizationId, $scope.organization);
-        updateOrganization.then(function (promise) {
-            $scope.isWorking = false;
-            if (promise && promise.error) $rootScope.$broadcast("apiWarning", promise.error);
-            else $mdDialog.hide();
-        })
-    };
-
-    $scope.cancel = function () {
-        $mdDialog.cancel()
-    };
-});
-
-
-/* ==============================================================================
- ====================================================
- ====================================================
- ==========================
- ====================================================
- ====================================================
- ============================================================================== */
-
-
 angular.module('Modals').controller('ModalCtrl', function ($scope, $rootScope, $mdDialog) {
     $rootScope.displayed = false;
     $scope.$on('apiError', function (event, apiError) {
@@ -151,6 +113,100 @@ angular.module("Modals").controller("DialogApiController", function ($scope, $ro
 });
 
 
+
+angular.module("Modals").controller("DialogOrganizationController", function ($scope, $rootScope, $mdDialog, organizationsService, items) {
+    $scope.organization = angular.copy(items.organization);
+    if (items.hasOwnProperty('organizationId')) $scope.organizationId = items.organizationId;
+    else $scope.organizationId = null;
+
+    $scope.isWorking = false;
+
+    $scope.isNotValid = function () {
+        if (!$scope.organization.hasOwnProperty('name')) return true;
+        else if ($scope.organization.name == "") return true;
+        else return false;
+    };
+
+    $scope.save = function () {
+        $scope.isWorking = true;
+        var updateOrganization = organizationsService.updateOrganization($scope.organizationId, $scope.organization);
+        updateOrganization.then(function (promise) {
+            $scope.isWorking = false;
+            if (promise && promise.error) $rootScope.$broadcast("apiWarning", promise.error);
+            else $mdDialog.hide();
+        })
+    };
+
+    $scope.cancel = function () {
+        $mdDialog.cancel()
+    };
+});
+
+angular.module("Modals").controller("DialogEmailListController", function ($scope, $rootScope, $mdDialog, $mdConstant, settingsUsersService, organizationsService, settingsEmailListsService, items) {
+    if (items.emailList != undefined) $scope.emailList = angular.copy(items.emailList);
+    else $scope.emailList = {
+        name: "",
+        emails: []
+    }
+    if (items.hasOwnProperty('emailListId')) $scope.emailListId = items.emailListId;
+    else $scope.emailListId = null;
+
+
+    // Any key code can be used to create a custom separator
+    var semicolon = 186;
+    $scope.customKeys = [
+        $mdConstant.KEY_CODE.ENTER,
+        $mdConstant.KEY_CODE.SPACE,
+        $mdConstant.KEY_CODE.COMMA,
+        $mdConstant.KEY_CODE.TAB,
+        semicolon];
+
+    $scope.isWorking = false;
+
+    $scope.isNotValid = function () {
+        if (!$scope.emailList.hasOwnProperty('name')) return true;
+        else if ($scope.emailList.name == "") return true;
+        else if (!$scope.emailList.hasOwnProperty("emails")) return true;
+        else if ($scope.emailList.emails.length == 0) return true;
+        else return false;
+    };
+
+    $scope.organizations;
+
+    var requestForMyAccount = settingsUsersService.getMyAccount();
+    requestForMyAccount.then(function (promise) {
+        if (promise && promise.error) $rootScope.$broadcast("apiWarning", promise.error);
+        else {
+            $scope.myAccount = promise.user;
+            var requestForOrganizations = organizationsService.getOrganizations();
+            requestForOrganizations.then(function (promise) {
+                if (promise && promise.error) $rootScope.$broadcast("apiWarning", promise.error);
+                else {
+                    $scope.organizations = promise.organizations;
+                    $scope.isWorking = false;
+                }
+            });
+        }
+    })
+
+
+
+    $scope.save = function () {
+        $scope.isWorking = true;
+        var updateEmailList = settingsEmailListsService.updateEmailList($scope.emailListId, $scope.emailList);
+        updateEmailList.then(function (promise) {
+            $scope.isWorking = false;
+            if (promise && promise.error) $rootScope.$broadcast("apiWarning", promise.error);
+            else $mdDialog.hide();
+        })
+    };
+
+    $scope.cancel = function () {
+        $mdDialog.cancel()
+    };
+});
+
+
 angular.module("Modals").controller("DialogUserController", function ($scope, $rootScope, $mdDialog, settingsUsersService, organizationsService, items) {
     $scope.password_confirm = "";
     $scope.myAccount = {};
@@ -239,6 +295,17 @@ angular.module("Modals").controller("DialogUserController", function ($scope, $r
     };
 });
 
+
+/* ==============================================================================
+ ====================================================
+ ====================================================
+ ==========================
+ ====================================================
+ ====================================================
+ ============================================================================== */
+
+
+
 angular.module("Modals").controller("DialogMyAccountController", function ($scope, $mdDialog, settingsUsersService, items) {
     $scope.password_confirm = "";
 
@@ -286,182 +353,3 @@ angular.module("Modals").controller("DialogMyAccountController", function ($scop
     };
 });
 
-
-angular.module("Modals").controller("DialogEnableController", function ($scope, $rootScope, $mdDialog, scheduleService, settingsClassroomsService, items) {
-    $scope.classrooms;
-
-    if (items.hasOwnProperty('classroom')) {
-        $scope.classroom = items.classroom;
-        $scope.schedule = {
-            action: "enable",
-            SchoolId: $rootScope.schoolId,
-            ClassroomId: items.classroom.id,
-            activation: null,
-            duration: 60,
-            endDate: new Date()
-        };
-    }
-    else {
-        $scope.schedule = {
-            action: "enable",
-            SchoolId: $rootScope.schoolId,
-            ClassroomId: 0,
-            activation: null,
-            duration: 60,
-            endDate: new Date()
-        };
-        $scope.isWorking = true;
-        $scope.classroom = null;
-        var requestForClassrooms = settingsClassroomsService.getClassrooms();
-        requestForClassrooms.then(function (promise) {
-            if (promise && promise.error) $rootScope.$broadcast("apiWarning", promise.error);
-            else {
-                $scope.classrooms = promise.classrooms;
-                $scope.isWorking = false;
-            }
-        })
-    }
-
-
-    $scope.minDate = new Date();
-
-    $scope.isWorking = false;
-
-    $scope.isNotValid = function () {
-        if ($scope.schedule.ClassroomId == 0) return true;
-        else if ($scope.schedule.activation == "unlimited") return false;
-        else if ($scope.schedule.activation == "duration" && $scope.schedule.duration > 0) return false;
-        else if ($scope.schedule.activation == "until" && $scope.schedule.endDate > new Date()) return false;
-        else return true;
-    };
-
-    $scope.save = function () {
-        $scope.isWorking = true;
-        var createSchedule = scheduleService.createSchedule($scope.schedule);
-        createSchedule.then(function (promise) {
-            $scope.isWorking = false;
-            if (promise && promise.error) $rootScope.$broadcast("apiWarning", promise.error);
-            else $mdDialog.hide();
-        })
-    };
-
-    $scope.cancel = function () {
-        $mdDialog.cancel()
-    };
-});
-
-
-angular.module("Modals").controller("DialogScheduleController", function ($scope, $rootScope, $mdDialog, scheduleService, settingsClassroomsService, items) {
-
-    if (items.schedule) {
-        $scope.schedule = {
-            ClassroomId: items.schedule.ClassroomId,
-            SchoolId: items.schedule.SchoolId,
-            startDate: items.schedule.startDate
-        };
-        $scope.scheduleId = items.schedule.id;
-        if ($scope.schedule.endDateTs > 0) {
-
-            $scope.schedule.activation = "until";
-            $scope.schedule.endDate = new Date($scope.schedule.endDate);
-        } else {
-            $scope.schedule.activation = "unlimited";
-            $scope.schedule.endDate = new Date();
-        }
-    } else {
-        $scope.schedule = {
-            ClassroomId: 0,
-            SchoolId: $rootScope.SchoolId,
-            startDate: new Date(),
-            activation: "unlimited",
-            endDate: new Date()
-        }
-    }
-
-    $scope.isWorking = true;
-    $scope.classroom = null;
-    var requestForClassrooms = settingsClassroomsService.getClassrooms();
-    requestForClassrooms.then(function (promise) {
-        if (promise && promise.error) $rootScope.$broadcast("apiWarning", promise.error);
-        else {
-            $scope.classrooms = promise.classrooms;
-            $scope.isWorking = false;
-        }
-    });
-
-
-    $scope.isWorking = false;
-
-    $scope.isNotValid = function () {
-        if ($scope.schedule.ClassroomId == 0) return true;
-        else if ($scope.schedule.activation == "unlimited") return false;
-        else if ($scope.schedule.activation == "duration" && $scope.schedule.duration > 0) return false;
-        else if ($scope.schedule.activation == "until" && $scope.schedule.endDate > $scope.schedule.startDate) return false;
-        else return true;
-    };
-
-    $scope.save = function () {
-        $scope.isWorking = true;
-        var createSchedule = scheduleService.updateSchedule($scope.scheduleId, $scope.schedule);
-        createSchedule.then(function (promise) {
-            $scope.isWorking = false;
-            if (promise && promise.error) $rootScope.$broadcast("apiWarning", promise.error);
-            else $mdDialog.hide();
-        })
-    };
-
-    $scope.cancel = function () {
-        $mdDialog.cancel()
-    };
-});
-
-
-angular.module("Modals").controller("DialogPlanScheduleController", function ($scope, $rootScope, $mdDialog, scheduleService, settingsClassroomsService, items) {
-
-    $scope.schedule = {
-        action: "enable",
-        SchoolId: $rootScope.schoolId,
-        ClassroomId: 0,
-        activation: null,
-        duration: 60,
-        startDate: new Date(),
-        endDate: new Date()
-    };
-    $scope.isWorking = true;
-    $scope.classroom = null;
-    var requestForClassrooms = settingsClassroomsService.getClassrooms();
-    requestForClassrooms.then(function (promise) {
-        if (promise && promise.error) $rootScope.$broadcast("apiWarning", promise.error);
-        else {
-            $scope.classrooms = promise.classrooms;
-            $scope.isWorking = false;
-        }
-    });
-
-
-    $scope.minDate = new Date();
-
-    $scope.isWorking = false;
-
-    $scope.isNotValid = function () {
-        if ($scope.schedule.ClassroomId == 0) return true;
-        else if ($scope.schedule.activation == "unlimited") return false;
-        else if ($scope.schedule.activation == "duration" && $scope.schedule.duration > 0) return false;
-        else if ($scope.schedule.activation == "until" && $scope.schedule.endDate > new Date()) return false;
-        else return true;
-    };
-
-    $scope.save = function () {
-        $scope.isWorking = true;
-        var createSchedule = scheduleService.createSchedule($scope.schedule);
-        createSchedule.then(function (promise) {
-            $scope.isWorking = false;
-            if (promise && promise.error) $rootScope.$broadcast("apiWarning", promise.error);
-            else $mdDialog.hide();
-        })
-    };
-
-    $scope.cancel = function () {
-        $mdDialog.cancel()
-    };
-});

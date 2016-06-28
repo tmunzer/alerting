@@ -13,7 +13,7 @@ function validateEmail(email) {
 var EmailListSchema = new mongoose.Schema({
     organization: {type: mongoose.Schema.ObjectId, ref:"Organization"},
     name: {type: String, set: capitalize, trim: true, default: ""},
-    email: [{type: String, required: true, unique: true, validator: validateEmail}],
+    emails: [{type: String, required: true, unique: true, validator: validateEmail}],
     created_at    : { type: Date },
     updated_at    : { type: Date }
 });

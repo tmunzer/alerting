@@ -66,6 +66,7 @@ var apiOrganizations = require('./routes/api_organizations');
 var apiAlarms = require('./routes/api_alarms');
 var apiXapis = require('./routes/api_xapis');
 var apiUsers = require('./routes/api_users');
+var apiEmailLists = require('./routes/api_emailLists');
 var apiOauth = require('./routes/api_oauth');
 //var api = require('./routes/api');
 
@@ -77,6 +78,7 @@ app.use('/api/organizations', apiOrganizations);
 app.use('/api/alarms', apiAlarms);
 app.use('/api/xapis', apiXapis);
 app.use('/api/users', apiUsers);
+app.use('/api/emaillists', apiEmailLists);
 app.use('/oauth', apiOauth);
 
 app.use('/', login);

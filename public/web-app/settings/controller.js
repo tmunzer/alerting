@@ -5,7 +5,7 @@ angular.module("Settings").filter("organizationDisplay", function () {
     }
 });
 
-angular.module('Settings').controller("SettingsCtrl", function ($scope, $rootScope, $mdDialog, settingsUsersService, organizationsService, settingsApisService) {
+angular.module('Settings').controller("SettingsCtrl", function ($scope, $rootScope, $mdDialog, settingsUsersService, organizationsService, settingsApisService, settingsEmailListsService) {
 
     $scope.requestForUsers = null;
     $scope.users;
@@ -22,8 +22,21 @@ angular.module('Settings').controller("SettingsCtrl", function ($scope, $rootSco
     $scope.userTable = {
         show: false,
         filter: "",
-        order: 'username'
+        order: 'email'
     };
+
+
+    var requestForEmailLists = null;
+    $scope.emailLists;
+
+    $scope.emailListsItemsByPage = 10;
+    $scope.emailListsCurrentPage = 1;
+    $scope.emailListsTable = {
+        show: false,
+        filter: "",
+        order: 'name'
+    };
+
 
     var requestForApis = null;
     $scope.apis;
@@ -101,6 +114,62 @@ angular.module('Settings').controller("SettingsCtrl", function ($scope, $rootSco
     };
 
 
+    function getEmailLists() {
+        requestForEmailLists = settingsEmailListsService.getEmailLists();
+        requestForEmailLists.then(function (promise) {
+            if (promise && promise.error) $scope.$broadcast("apiError", promise.error);
+            else $scope.emailLists = promise.emailLists;
+        });
+    }
+
+
+    $scope.newEmailList = function () {
+        $mdDialog.show({
+            controller: 'DialogEmailListController',
+            templateUrl: 'modals/modalEmailListContent.html',
+            locals: {
+                items: {}
+            }
+        }).then(function () {
+            getEmailLists();
+        });
+    };
+    $scope.editEmailList = function (emailList) {
+        $mdDialog.show({
+            controller: 'DialogEmailListController',
+            templateUrl: 'modals/modalEmailListContent.html',
+            locals: {
+                items: {
+                    emailListId: emailList._id,
+                    emailList: emailList
+                }
+            }
+        }).then(function () {
+            getEmailLists();
+        });
+    };
+    $scope.deleteEmailList = function (emailListId) {
+        $mdDialog.show({
+            controller: "DialogConfirmController",
+            templateUrl: "modals/modalConfirmContent.html",
+            locals: {
+                items: {
+                    action: 'removeEmailList'
+                }
+            }
+        }).then(function () {
+            var requestForEmailLists = settingsEmailListsService.deleteEmailList(emailListId);
+            requestForEmailLists.then(function (promise) {
+                if (promise && promise.error) $scope.$broadcast("apiError", promise.error);
+                else getEmailLists();
+            })
+        })
+    };
+
+
+
+
+
     function getApis() {
         requestForApis = settingsApisService.getApis();
         requestForApis.then(function (promise) {
@@ -145,6 +214,7 @@ angular.module('Settings').controller("SettingsCtrl", function ($scope, $rootSco
     };
 
     $rootScope.$watch("organizationId", function () {
+        getEmailLists();
         getUsers();
         getApis();
     });

@@ -158,6 +158,131 @@ angular.module('Settings').factory("settingsUsersService", function ($http, $q, 
     }
 });
 
+angular.module('Settings').factory("settingsEmailListsService", function ($http, $q, $rootScope) {
+    var isLoaded = false;
+    var promise = null;
+
+    function getEmailLists() {
+        isLoaded = false;
+        if (promise) promise.abort();
+
+        var canceller = $q.defer();
+        var request = $http({
+            url: "/api/emaillists",
+            method: "GET",
+            params: {organizationId: $rootScope.organizationId},
+            timeout: canceller.promise
+        });
+
+        promise = request.then(
+            function (response) {
+                if (response.data.error) return response.data;
+                else {
+                    isLoaded = true;
+                    return response.data;
+                }
+            },
+            function (response) {
+                if (response.status && response.status >= 0) {
+                    $rootScope.$broadcast('serverError', response);
+                    return ($q.reject("error"));
+                }
+            });
+        promise.abort = function () {
+            canceller.resolve();
+        };
+        promise.finally(function () {
+            //console.info("Cleaning up object references.");
+            promise.abort = angular.noop;
+            canceller = request = promise = null;
+        });
+        return promise;
+    }
+
+
+    function deleteEmailList(id) {
+        if (promise) promise.abort();
+
+        var canceller = $q.defer();
+        var request = $http({
+            url: "/api/emaillists",
+            method: "DELETE",
+            params: {id: id},
+            timeout: canceller.promise
+        });
+
+        promise = request.then(
+            function (response) {
+                if (response.data.error) return response.data;
+                else return response
+            },
+            function (response) {
+                if (response.status && response.status >= 0) {
+                    $rootScope.$broadcast('serverError', response);
+                    return ($q.reject("error"));
+                }
+            });
+        promise.abort = function () {
+            canceller.resolve();
+        };
+        promise.finally(function () {
+           // console.info("Cleaning up object references.");
+            promise.abort = angular.noop;
+            canceller = request = promise = null;
+        });
+        return promise;
+    }
+
+    function updateEmailList(emailListId, emailList){
+        if (promise) promise.abort();
+        var canceller = $q.defer();
+
+        var data = {emailList: emailList};
+        if (emailListId) data.emailListId = emailListId;
+    
+
+        var request = $http({
+            url: "/api/emaillists",
+            method: "POST",
+            data: data,
+            timeout: canceller.promise
+        });
+
+        promise = request.then(
+            function (response) {
+                if (response.data.error) return response.data;
+                else {
+                    isLoaded = true;
+                    return response.data;
+                }
+            },
+            function (response) {
+                if (response.status && response.status >= 0) {
+                    $rootScope.$broadcast('serverError', response);
+                    return ($q.reject("error"));
+                }
+            });
+        promise.abort = function () {
+            canceller.resolve();
+        };
+        promise.finally(function () {
+            //console.info("Cleaning up object references.");
+            promise.abort = angular.noop;
+            canceller = request = promise = null;
+        });
+        return promise;
+    }
+    return {
+        getEmailLists: getEmailLists,
+        deleteEmailList: deleteEmailList,
+        updateEmailList: updateEmailList,
+        isLoaded: function () {
+            return isLoaded;
+        }
+    }
+});
+
+
 angular.module('Settings').factory("settingsApisService", function ($http, $q, $rootScope) {
     var isLoaded = false;
     var promise = null;
