@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var bCrypt = require('bcrypt');
+var bCrypt = require('bcryptjs');
 
 
 function cryptPassword (password){
